@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskMe</title>
+
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/my.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="p-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <img src="static/img/logo.svg" alt width="40" height="32" class="me-2">
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-4 mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-primary">AskMe</a></li>
+                <li><a href="#" class="nav-link px-2">About</a></li>
+            </ul>
+
+            <a href="#" class="col-12 col-lg-auto me-lg-auto mb-2 mb-md-0">
+                <button type="button" class="btn btn-outline-success">ASK!</button>
+            </a>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div class="text-end mb-3 mb-lg-0 me-lg-3">
+                <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                <button type="button" class="btn btn-primary">Sign-up</button>
+            </div>
+
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="col-lg-8 mx-auto p-3 py-md-5">
+    <main>
+        <div class="row g-5">
+            <div class="col-md-9">
+<!-- ##############################   MAIN CONTENT   ############################################################### -->
+
+                <h2>Questions</h2>
+
+                <div class="card card-body m-4">
+                    <div class="row">
+                        <div class="col-1 d-flex flex-column">
+                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                                <div><input class="form-control" type="number" value="0"></div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <h2>Complex question #1</h2>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet vulputate urna gravida imperdiet. Vivamus euismod non metus quis condimentum. Quisque placerat mattis lectus, vel porttitor nulla iaculis eget. Duis nulla erat, ullamcorper et magna a, pharetra mollis sem. Etiam ut turpis sit amet quam hendrerit posuere. Sed venenatis quis mauris at fringilla. Maecenas a risus risus. Vestibulum varius mauris vitae orci gravida, id lobortis odio tristique.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-outline-primary">
+                                        Answers <span class="badge bg-secondary">2</span>
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <div class="badge bg-light text-dark fs-6">
+                                        Tags:
+                                        <a href="#"><span class="badge rounded-pill bg-primary">Mail.Ru</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-secondary">TechnoPark</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-secondary">Voloshin</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-body m-4">
+                    <div class="row">
+                        <div class="col-1 d-flex flex-column">
+                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                                <div><input class="form-control" type="number" value="0"></div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <h2>Stupid question</h2>
+                                <p>
+                                    Proin et scelerisque tortor. Etiam eget turpis suscipit, varius neque nec, lacinia elit. Sed viverra eros tellus, sed dapibus mauris sollicitudin ac. Nullam consectetur, purus sit amet tincidunt ultricies, lectus ipsum faucibus odio, suscipit tincidunt urna dolor quis ligula. Sed lobortis mauris sit amet blandit iaculis. Aenean elit purus, interdum non risus in, pretium elementum erat. Curabitur sit amet dui nibh. Praesent pharetra turpis tortor, eget tristique massa ultrices eu.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-outline-primary">
+                                        Answers <span class="badge bg-secondary">17</span>
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <div class="badge bg-light text-dark fs-6">
+                                        Tags:
+                                        <a href="#"><span class="badge rounded-pill bg-warning">Python</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-danger">MySQL</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-success">Django</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-warning">Firefox</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-body m-4">
+                    <div class="row">
+                        <div class="col-1 d-flex flex-column">
+                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                                <div><input class="form-control" type="number" value="0"></div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <h2>Some other question</h2>
+                                <p>
+                                    Maecenas augue libero, malesuada quis fringilla porta, maximus non quam. Pellentesque erat odio, sagittis ac malesuada et, blandit non purus. Maecenas elit enim, porta rhoncus nulla sit amet, fermentum malesuada dolor. Sed sed metus molestie, fringilla justo eget, aliquet metus. Donec quam ligula, cursus at risus et, tempus hendrerit turpis. Mauris eu quam ut ligula interdum molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In efficitur eleifend elementum.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-outline-primary">
+                                        Answers <span class="badge bg-secondary">6</span>
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <div class="badge bg-light text-dark fs-6">
+                                        Tags:
+                                        <a href="#"><span class="badge rounded-pill bg-primary">Mail.Ru</span></a>
+                                        <a href="#"><span class="badge rounded-pill bg-secondary">perl</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!-- ##############################   MAIN CONTENT END  ############################################################ -->
+
+            </div>
+
+            <div class="col-md-3">
+                <div class="row">
+                    <h2>Popular Tags</h2>
+                    <p>
+                        <a href="#"><span class="badge rounded-pill bg-secondary">perl</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-warning fs-5">Python</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-secondary">TechnoPark</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-danger">MySQL</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-success fs-6">Django</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-primary">Mail.Ru</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-secondary">Voloshin</span></a>
+                        <a href="#"><span class="badge rounded-pill bg-warning">Firefox</span></a>
+                    </p>
+                </div>
+
+                <div class="row">
+                    <h2>Best Members</h2>
+                    <ol class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold"><a href="#">Mr.Freeman</a></div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">99+</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold"><a href="#">Dr.House</a></div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">69</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold"><a href="#">Bender</a></div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">42</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold"><a href="#">Queen Victoria</a></div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">14</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold"><a href="#">V. Pupkin</a></div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">7</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="pt-5 my-5 text-muted border-top">
+        Created by the Dakone22 &middot; &copy; 2021
+    </footer>
+</div>
+
+<script src="static/js/bootstrap.bundle.js"></script>
+</body>
+</html>

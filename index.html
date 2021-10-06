@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskMe</title>
+
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/my.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="p-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <img src="static/img/logo.svg" alt width="40" height="32" class="me-2">
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-primary">AskMe</a></li>
+                <li><a href="#" class="nav-link px-2">About</a></li>
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div class="text-end mb-3 mb-lg-0 me-lg-3">
+                <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                <button type="button" class="btn btn-primary">Sign-up</button>
+            </div>
+
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="col-lg-8 mx-auto p-3 py-md-5">
+    <main>
+        <div class="row g-5">
+            <div class="col-md-9">
+                <h2>Questions</h2>
+
+                <div class="card card-body question">
+                    <div class="row">
+                        <div class="col-1">
+                            <div><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                            <div class="align-items-end votes"><input class="form-control" type="number"></div>
+                        </div>
+                        <div class="col">
+                            <h2>Question title</h2>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porttitor nulla tempor nisi ultricies sollicitudin. Fusce eget sagittis justo, eget eleifend leo. Nunc ut semper augue. In ultrices tortor nec justo congue, eget tincidunt turpis condimentum. Nunc laoreet pulvinar tortor et viverra. Donec vel mattis magna. Suspendisse eu feugiat ante, id malesuada magna.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-body question">
+                    <div class="row">
+                        <div class="col-1">
+                            <div><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                            <div class="align-items-end votes"><input class="form-control" type="number"></div>
+                        </div>
+                        <div class="col">
+                            <h2>Some other question</h2>
+                            Suspendisse quis mauris a dui feugiat finibus nec sit amet erat. Curabitur lectus nibh, aliquam nec iaculis et, mattis euismod nisl. In tellus ligula, consequat sed metus sit amet, porttitor ullamcorper augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed erat odio, bibendum at aliquam id, elementum vitae sapien. Quisque cursus est in sapien accumsan dapibus. Suspendisse potenti. Vivamus fermentum porttitor sapien, a placerat lectus mollis ut. Donec imperdiet erat arcu, nec scelerisque erat bibendum ut. Morbi fringilla lorem lacinia ligula sollicitudin dapibus. Morbi tempor purus eget massa dictum, eget vestibulum metus rhoncus. Nam sed tempor mi, eget laoreet neque. Aliquam erat volutpat. Donec elementum volutpat enim ut pulvinar. Pellentesque elit nisi, ornare vitae lacus eget, finibus aliquam ante. Quisque in nisi lacinia, pharetra justo lobortis, sollicitudin augue.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+                <h2>Popular tags</h2>
+                <p>Read more detailed instructions and documentation on using or contributing to Bootstrap.</p>
+                <ul class="icon-list">
+                    <li><a href="#">Bootstrap quick start guide</a></li>
+                    <li><a href="#">Bootstrap Webpack guide</a></li>
+                    <li><a href="#">Bootstrap Parcel guide</a></li>
+                    <li><a href="#">Contributing to Bootstrap</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="pt-5 my-5 text-muted border-top">
+        Created by the Dakone22 &middot; &copy; 2021
+    </footer>
+</div>
+
+<script src="static/js/bootstrap.bundle.js"></script>
+</body>
+</html>

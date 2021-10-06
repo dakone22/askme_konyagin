@@ -1,0 +1,22 @@
+{
+  "name": "askme_konyagin",
+  "version": "1.0.0",
+  "description": "AskMe project for [TechPark Web course](https://github.com/ziontab/tp-tasks)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dakone22/askme_konyagin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dakone22/askme_konyagin/issues"
+  },
+  "homepage": "https://github.com/dakone22/askme_konyagin#readme",
+  "dependencies": {
+    "bootstrap": "^5.1.2"
+  }
+}

@@ -61,12 +61,10 @@
             <div class="col-md-9">
 <!-- ##############################   MAIN CONTENT   ############################################################### -->
 
-                <h2>Questions</h2>
-
-                <div class="card card-body m-4">
+                <div class="m-3 fs-5">
                     <div class="row">
-                        <div class="col-1 d-flex flex-column">
-                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                        <div class="col-2 d-flex flex-column">
+                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="128" class="me-2"></div>
                                 <div><input class="form-control" type="number" value="0"></div>
                         </div>
                         <div class="col">
@@ -77,11 +75,6 @@
                                 </p>
                             </div>
                             <div class="row">
-                                <div class="col-auto">
-                                    <button type="button" class="btn btn-outline-primary">
-                                        Answers <span class="badge bg-secondary">2</span>
-                                    </button>
-                                </div>
                                 <div class="col">
                                     <div class="badge bg-light text-dark fs-6">
                                         Tags:
@@ -95,32 +88,27 @@
                     </div>
                 </div>
 
-                <div class="card card-body m-4">
+                <hr>
+
+                <div class="card border-success card-body m-4">
                     <div class="row">
                         <div class="col-1 d-flex flex-column">
-                                <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
-                                <div><input class="form-control" type="number" value="0"></div>
+                            <div class="mb-auto"><img src="static/img/logo.svg" alt width="64" class="me-2"></div>
+                            <div><input class="form-control border-success" type="number" value="5"></div>
                         </div>
                         <div class="col">
                             <div class="row">
-                                <h2>Stupid question</h2>
                                 <p>
                                     Proin et scelerisque tortor. Etiam eget turpis suscipit, varius neque nec, lacinia elit. Sed viverra eros tellus, sed dapibus mauris sollicitudin ac. Nullam consectetur, purus sit amet tincidunt ultricies, lectus ipsum faucibus odio, suscipit tincidunt urna dolor quis ligula. Sed lobortis mauris sit amet blandit iaculis. Aenean elit purus, interdum non risus in, pretium elementum erat. Curabitur sit amet dui nibh. Praesent pharetra turpis tortor, eget tristique massa ultrices eu.
                                 </p>
                             </div>
                             <div class="row">
-                                <div class="col-auto">
-                                    <button type="button" class="btn btn-outline-primary">
-                                        Answers <span class="badge bg-secondary">17</span>
-                                    </button>
-                                </div>
                                 <div class="col">
-                                    <div class="badge bg-light text-dark fs-6">
-                                        Tags:
-                                        <a href="#"><span class="badge rounded-pill bg-warning">Python</span></a>
-                                        <a href="#"><span class="badge rounded-pill bg-danger">MySQL</span></a>
-                                        <a href="#"><span class="badge rounded-pill bg-success">Django</span></a>
-                                        <a href="#"><span class="badge rounded-pill bg-warning">Firefox</span></a>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" value="" id="answerCorrect" checked>
+                                      <label class="form-check-label" for="answerCorrect">
+                                        Correct!
+                                      </label>
                                     </div>
                                 </div>
                             </div>
@@ -136,22 +124,17 @@
                         </div>
                         <div class="col">
                             <div class="row">
-                                <h2>Some other question</h2>
                                 <p>
                                     Maecenas augue libero, malesuada quis fringilla porta, maximus non quam. Pellentesque erat odio, sagittis ac malesuada et, blandit non purus. Maecenas elit enim, porta rhoncus nulla sit amet, fermentum malesuada dolor. Sed sed metus molestie, fringilla justo eget, aliquet metus. Donec quam ligula, cursus at risus et, tempus hendrerit turpis. Mauris eu quam ut ligula interdum molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In efficitur eleifend elementum.
                                 </p>
                             </div>
                             <div class="row">
-                                <div class="col-auto">
-                                    <button type="button" class="btn btn-outline-primary">
-                                        Answers <span class="badge bg-secondary">6</span>
-                                    </button>
-                                </div>
                                 <div class="col">
-                                    <div class="badge bg-light text-dark fs-6">
-                                        Tags:
-                                        <a href="#"><span class="badge rounded-pill bg-primary">Mail.Ru</span></a>
-                                        <a href="#"><span class="badge rounded-pill bg-secondary">perl</span></a>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" value="" id="answerCorrect1">
+                                      <label class="form-check-label" for="answerCorrect1">
+                                        Correct!
+                                      </label>
                                     </div>
                                 </div>
                             </div>
@@ -178,6 +161,18 @@
                         </ul>
                     </nav>
                 </div>
+
+                <hr>
+
+                <div class="m-4">
+                    <form method="post">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter your answer here..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Submit</button>
+                    </form>
+                </div>
+
 <!-- ##############################   MAIN CONTENT END  ############################################################ -->
 
             </div>

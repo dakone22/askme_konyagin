@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Settings: Dr. Pepper</h2>
+
+<div class="m-4">
+    <form method="post">
+        <div class="mb-3">
+            <label for="settingsLogin" class="form-label">Login</label>
+            <input type="text" class="form-control" id="settingsLogin" placeholder="old_login">
+        </div>
+        <div class="mb-3">
+            <label for="settingsEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="settingsEmail" placeholder="old_email@example.com">
+        </div>
+        <div class="mb-3">
+            <label for="settingsNickName" class="form-label">NickName</label>
+            <input type="text" class="form-control" id="settingsNickName" placeholder="old_nickname">
+        </div>
+        <div class="mb-3">
+            <label for="settingsAvatar" class="form-label">Upload avatar</label>
+            <div class="m-2"><img src="{% static 'img/logo.svg' %}" alt width="128" class="me-2"></div>
+            <input class="form-control" type="file" id="settingsAvatar">
+        </div>
+        <a href="#"><button  class="btn btn-outline-primary">Back</button></a>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}

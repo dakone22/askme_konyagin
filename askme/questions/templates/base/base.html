@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{{ title }} – AskMe{% endblock %}</title>
+
+        {% load static %}
+
+        <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+        {% block extra_css %} {% endblock %}
+
+        <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}"/>
+    </head>
+    <body>
+        {% include 'base/navbar.htm' %}
+
+        <div class="col-lg-8 mx-auto p-3 py-md-5">
+            <main>
+                <div class="row g-5">
+                    <div class="col-md-9">
+                        {% block content %} {% endblock %}
+                    </div>
+
+                    <div class="col-md-3">
+                        {% include 'base/sidebar.htm' %}
+                    </div>
+                </div>
+            </main>
+
+            {% include 'base/footer.htm' %}
+        </div>
+
+        <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>

@@ -67,6 +67,7 @@ COUNTS = {
 #     'AnswerVote': 1_000_000,
 # }
 
+
 class Command(BaseCommand):
     help = 'Generate start up DB'
 
@@ -120,7 +121,7 @@ class Command(BaseCommand):
             v = QuestionVote.objects.create(
                 user=random.choice(User.objects.all()),
                 question=random.choice(Question.objects.all()),
-                type=random.randint(0, 100) > 20,
+                type=random.randint(0, 100) > 40,
             )
             print(f"created {v}")
             v.save()
@@ -128,7 +129,7 @@ class Command(BaseCommand):
             v = AnswerVote.objects.create(
                 user=random.choice(User.objects.all()),
                 answer=random.choice(Answer.objects.all()),
-                type=random.randint(0, 100) > 20,
+                type=random.randint(0, 100) > 40,
             )
             print(f"created {v}")
             v.save()

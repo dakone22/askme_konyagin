@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from . import get_url_func, get_html_link
 from .votes import QuestionVote, AnswerVote
@@ -12,7 +12,7 @@ from .votes import QuestionVote, AnswerVote
 
 class TagQuerySet(models.QuerySet):
     def top(self):
-        return self.annotate(count=Count('question__id')).order_by('-count')[:10]
+        return self.annotate(count=Count('question')).order_by('-count')[:10]
 
 
 class Tag(models.Model):
@@ -51,7 +51,9 @@ class QuestionQuerySet(models.QuerySet):
         return self.filter(date__gte=from_date)
 
     def popular(self) -> models.QuerySet:
-        return self.annotate(count=Count('answer')).order_by('-count')[:10]
+        return self.annotate(num_votes=Count('questionvote', filter=Q(questionvote__type=True)) -
+                                       Count('questionvote', filter=Q(questionvote__type=False))) \
+                   .order_by('-num_votes')  # TODO: by votes
 
 
 class Question(models.Model):

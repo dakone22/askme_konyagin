@@ -9,7 +9,13 @@ from .models import Question, Tag
 
 def get_page_object(request: HttpRequest, objects: list, count_on_list=5, adjacent_pages=2):
     paginator = Paginator(objects, count_on_list)
-    page_obj = paginator.get_page(request.GET.get('page'))
+    n = request.GET.get('page')
+    page_obj = paginator.get_page(n)
+
+    if int(n) < 1:
+        page_obj.number = 1
+    if page_obj.number > paginator.num_pages:
+        page_obj.number = paginator.num_pages
 
     start_page = max(page_obj.number - adjacent_pages, 1)
     if start_page <= 3:
@@ -25,13 +31,6 @@ def get_page_object(request: HttpRequest, objects: list, count_on_list=5, adjace
     page_obj.show_last = paginator.num_pages not in page_numbers
 
     return page_obj
-
-
-# def list_view(request, objects):
-#     return render(request, 'question-list.html', context={
-#         'title': 'Questions',
-#         'questions': get_page_object(request, objects),
-#     })
 
 
 def index(request: HttpRequest):

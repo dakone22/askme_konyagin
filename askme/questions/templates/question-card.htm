@@ -22,7 +22,7 @@
                 <div class="col">
                     <div class="badge bg-light text-dark fs-6">
                         Tags:
-                        {% for tag in question.tags %}
+                        {% for tag in question.tags.all %}
                             {{ tag.html|safe }}
                         {% endfor %}
                     </div>

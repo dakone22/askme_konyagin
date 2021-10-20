@@ -2,50 +2,23 @@
 <div class="row">
     <h2>Popular Tags</h2>
     <p>
-        <a href="#"><span class="badge rounded-pill bg-secondary">perl</span></a>
-        <a href="#"><span class="badge rounded-pill bg-warning fs-5">Python</span></a>
-        <a href="#"><span class="badge rounded-pill bg-secondary">TechnoPark</span></a>
-        <a href="#"><span class="badge rounded-pill bg-danger">MySQL</span></a>
-        <a href="#"><span class="badge rounded-pill bg-success fs-6">Django</span></a>
-        <a href="#"><span class="badge rounded-pill bg-primary">Mail.Ru</span></a>
-        <a href="#"><span class="badge rounded-pill bg-secondary">Voloshin</span></a>
-        <a href="#"><span class="badge rounded-pill bg-warning">Firefox</span></a>
+        {% for tag in top_tags %}
+            {{ tag.html|safe }}
+        {% endfor %}
     </p>
 </div>
 
 <div class="row">
     <h2>Best Members</h2>
     <ol class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold"><a href="#">Mr.Freeman</a></div>
-            </div>
-            <span class="badge bg-primary rounded-pill">99+</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold"><a href="#">Dr.House</a></div>
-            </div>
-            <span class="badge bg-primary rounded-pill">69</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold"><a href="#">Bender</a></div>
-            </div>
-            <span class="badge bg-primary rounded-pill">42</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold"><a href="#">Queen Victoria</a></div>
-            </div>
-            <span class="badge bg-primary rounded-pill">14</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold"><a href="#">V. Pupkin</a></div>
-            </div>
-            <span class="badge bg-primary rounded-pill">7</span>
-        </li>
+        {% for user in top_members %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">{{ user.html|safe }}</div>
+                </div>
+                <span class="badge bg-primary rounded-pill">99+</span>
+            </li>
+        {% endfor %}
     </ol>
 </div>
 {% endblock %}

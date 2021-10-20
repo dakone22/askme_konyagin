@@ -5,6 +5,13 @@ from django.shortcuts import render
 from .models import Question, Tag
 
 
+# class MyTemplateView(TemplateView):
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['latest_articles'] = Article.objects.all()[:5]
+#         return context
+
+
 def index(request):
     context = {
         'title': 'Questions',
@@ -32,6 +39,7 @@ def question(request, question_id):
 def tag(request, tag):
     context = {
         'title': tag,
+        'tag': Tag.objects.get(pk=tag),
     }
     return render(request, os.path.join('tag.html'), context)
 

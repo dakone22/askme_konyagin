@@ -1,11 +1,38 @@
-from typing import List
-
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Count
 
 from . import get_url_func, get_html_link
-from .tag import TagQuestionRel
 from .votes import QuestionVote, AnswerVote
+
+
+class TagQuerySet(models.QuerySet):
+    def top(self):
+        return self.annotate(num_questions=Count('question__id')).order_by('-num_questions')[:10]
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=200, blank=True, null=True)
+
+    colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark']
+    color = models.IntegerField(choices=[(index, color) for index, color in enumerate(colors)])
+
+    objects = TagQuerySet.as_manager()
+
+    def __str__(self):
+        return self.name
+
+    url = get_url_func('tag')
+
+    def html(self):
+        return f'<a href="{self.url()}"><span class="badge rounded-pill bg-{self.colors[self.color]}">{str(self)}</span></a>'
+
+    def questions(self) -> models.QuerySet['Question']:
+        return self.question_set.all()
+
+    def question_count(self) -> int:
+        return self.question_set.count()
 
 
 class QuestionQuerySet(models.QuerySet):
@@ -19,13 +46,14 @@ class QuestionQuerySet(models.QuerySet):
     #     return tr.annotate(F('tag'))  # TODO: check
 
 
-
 class Question(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     date = models.DateTimeField(verbose_name='Creation date')
     title = models.CharField(max_length=100)
     text = models.TextField(max_length=5000)
+
+    tags = models.ManyToManyField(to=Tag)
 
     objects = QuestionQuerySet.as_manager()
 
@@ -34,9 +62,6 @@ class Question(models.Model):
 
     url = get_url_func('question')
     html = get_html_link
-
-    def tags(self) -> List['Tag']:
-        return [tqr.tag for tqr in TagQuestionRel.objects.filter(question=self)]
 
     def answers(self) -> models.QuerySet:
         return Answer.objects.filter(question=self)
@@ -64,7 +89,7 @@ class Answer(models.Model):
 
     date = models.DateTimeField(verbose_name='Creation date')
     text = models.TextField(max_length=1000)
-    correct = models.BooleanField(verbose_name="IsCorrect", default=False)
+    correct = models.BooleanField(verbose_name="Is Correct", default=False)
 
     objects = AnswerQuerySet.as_manager()
 

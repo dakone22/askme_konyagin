@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 from questions.models import QuestionVote, AnswerVote
 from questions.models import Tag, Question, Answer
-from questions.models.tag import TagQuestionRel
 
 
 def _get_str(chars, rang):
@@ -80,10 +79,9 @@ class Command(BaseCommand):
                 while True:
                     print(f"tag {_}")
                     tag = random.choice(Tag.objects.all())
-                    if not TagQuestionRel.objects.filter(tag=tag, question=q):
-                        tqr = TagQuestionRel.objects.create(tag=tag, question=q)
-                        print(f"new tag link {tqr}")
-                        tqr.save()
+                    if q not in tag.questions():
+                        q.tags.add(tag)
+                        print(f"new tag link {q} to {tag}")
                         break
 
             print("creating answers...")

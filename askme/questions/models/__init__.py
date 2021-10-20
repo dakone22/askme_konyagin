@@ -15,6 +15,5 @@ def get_html_link(self, style="text-info"):
 
 
 from .profile import Profile
-from .question import Question, Answer
-from .tag import Tag
+from .question import Question, Answer, Tag
 from .votes import QuestionVote, AnswerVote

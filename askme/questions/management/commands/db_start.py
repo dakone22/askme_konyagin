@@ -14,7 +14,7 @@ def _get_str(chars, rang):
 
 
 def get_username():
-    return _get_str(string.ascii_letters, (5, 25))
+    return _get_str(string.ascii_letters, (5, 15))
 
 
 def get_email():
@@ -47,24 +47,44 @@ except ImportError:
         return _get_str(string.ascii_letters + ' ' * 20, (750, 300))
 
 
+COUNTS = {
+    'users': 30,
+    'tags': 30,
+    'questions': 30,
+    'tags_link': 10,
+    'answers': 15,
+    'QuestionVote': 100,
+    'AnswerVote': 200,
+}
+
+# COUNTS = {
+#     'users': 10_000,
+#     'tags': 10_000,
+#     'questions': 100_000,
+#     'tags_link': 15,
+#     'answers': 1_000_000,
+#     'QuestionVote': 1_000_000,
+#     'AnswerVote': 1_000_000,
+# }
+
 class Command(BaseCommand):
     help = 'Generate start up DB'
 
     def handle(self, *args, **options):
         print("Creating users...")
-        for _ in range(15):
+        for _ in range(COUNTS['users']):
             u = User.objects.create_user(username=get_username(), email=get_email(), password=get_password())
             print(f"New user {u}")
             u.save()
 
         print("Creating tags...")
-        for _ in range(15):
+        for _ in range(COUNTS['users']):
             t = Tag.objects.create(name=f"Tag{_}", color=random.randint(0, 5))
             print(f"New tag {t}")
             t.save()
 
         print("Creating questions...")
-        for _ in range(10):
+        for _ in range(COUNTS['questions']):
             q = Question.objects.create(
                 author=random.choice(User.objects.all()),
                 date=datetime.now(),
@@ -75,7 +95,7 @@ class Command(BaseCommand):
             q.save()
 
             print("linking tags...")
-            for _ in range(random.randint(1, 10)):
+            for _ in range(random.randint(1, COUNTS['tags_link'])):
                 while True:
                     print(f"tag {_}")
                     tag = random.choice(Tag.objects.all())
@@ -85,7 +105,7 @@ class Command(BaseCommand):
                         break
 
             print("creating answers...")
-            for _ in range(random.randint(1, 15)):
+            for _ in range(random.randint(1, COUNTS['answers'])):
                 a = Answer.objects.create(
                     author=random.choice(User.objects.all()),
                     question=q,
@@ -96,7 +116,7 @@ class Command(BaseCommand):
                 a.save()
 
         print("Creating votes")
-        for _ in range(100):
+        for _ in range(COUNTS['QuestionVote']):
             v = QuestionVote.objects.create(
                 user=random.choice(User.objects.all()),
                 question=random.choice(Question.objects.all()),
@@ -104,7 +124,7 @@ class Command(BaseCommand):
             )
             print(f"created {v}")
             v.save()
-        for _ in range(200):
+        for _ in range(COUNTS['AnswerVote']):
             v = AnswerVote.objects.create(
                 user=random.choice(User.objects.all()),
                 answer=random.choice(Answer.objects.all()),

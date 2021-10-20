@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count
@@ -6,9 +8,11 @@ from . import get_url_func, get_html_link
 from .votes import QuestionVote, AnswerVote
 
 
+# ======== Tag ========
+
 class TagQuerySet(models.QuerySet):
     def top(self):
-        return self.annotate(num_questions=Count('question__id')).order_by('-num_questions')[:10]
+        return self.annotate(count=Count('question__id')).order_by('-count')[:10]
 
 
 class Tag(models.Model):
@@ -35,15 +39,19 @@ class Tag(models.Model):
         return self.question_set.count()
 
 
+# ======== Question ========
+
 class QuestionQuerySet(models.QuerySet):
     def from_author(self, author: User) -> models.QuerySet:
         return self.filter(author=author)
 
-    # def with_tags(self, tags: List[Tag]) -> models.QuerySet:
-    #     tr = TagQuestionRel.objects.filter(question=self)
-    #     for tag in tags:
-    #         tr = tr.filter(tag=tag)
-    #     return tr.annotate(F('tag'))  # TODO: check
+    def latest(self, from_date: datetime = None) -> models.QuerySet:
+        if from_date is None:
+            from_date = datetime.now() - timedelta(hours=1)
+        return self.filter(date__gte=from_date)
+
+    def popular(self) -> models.QuerySet:
+        return self.annotate(count=Count('answer')).order_by('-count')[:10]
 
 
 class Question(models.Model):
@@ -70,17 +78,15 @@ class Question(models.Model):
         return self.answers().get(correct=True)
 
     def votes(self) -> int:
-        votes = QuestionVote.objects.filter(question=self)
-        return votes.filter(type=True).count() - votes.filter(type=False).count()
+        my_votes = QuestionVote.objects.filter(question=self)
+        return my_votes.filter(type=True).count() - my_votes.filter(type=False).count()
 
+
+# ======== Answer ========
 
 class AnswerQuerySet(models.QuerySet):
     def from_author(self, author: User):
         return self.filter(author=author)
-
-    def vote_count(self):
-        votes = AnswerVote.objects.filter(question=self)
-        return votes.filter(type=True).count() - votes.filter(type=False).count()
 
 
 class Answer(models.Model):
@@ -95,3 +101,7 @@ class Answer(models.Model):
 
     def is_correct(self):
         return self.correct
+
+    def votes(self):
+        my_votes = AnswerVote.objects.filter(answer=self)
+        return my_votes.filter(type=True).count() - my_votes.filter(type=False).count()

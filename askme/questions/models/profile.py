@@ -5,9 +5,10 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from . import get_url_func, get_html_link
+from . import get_html_link
 
-User.add_to_class('url', get_url_func('user.current'))
+# User.add_to_class('url', get_url_func('user.current'))
+User.add_to_class('url', lambda _: '')
 User.add_to_class('html', get_html_link)
 
 
@@ -29,3 +30,5 @@ def create_user_profile(sender, instance: User, created: bool, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance: User, **kwargs):
     instance.profile.save()
+
+

@@ -10,7 +10,7 @@ def get_url_func(url: str):
     return get_url
 
 
-def get_html_link(self, style="text-info"):
+def get_html_link(self, style="text-primary"):
     return f'<a class="{style}" href="{self.url()}">{str(self)}</a>'
 
 

@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+{% for question in questions %}
+    {% include 'question-card.htm' with question=question %}
+{% endfor %}
+
+{% include 'base/paginator.htm' with page_obj=questions %}
+
+{% endblock %}

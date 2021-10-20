@@ -1,65 +1,95 @@
 import os
 
+from django.core.paginator import Paginator
+from django.http import HttpRequest
 from django.shortcuts import render
 
 from .models import Question, Tag
 
 
-# class MyTemplateView(TemplateView):
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['latest_articles'] = Article.objects.all()[:5]
-#         return context
+def get_page_object(request: HttpRequest, objects: list, count_on_list=5, adjacent_pages=2):
+    paginator = Paginator(objects, count_on_list)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    start_page = max(page_obj.number - adjacent_pages, 1)
+    if start_page <= 3:
+        start_page = 1
+    end_page = page_obj.number + adjacent_pages + 1
+    if end_page >= paginator.num_pages - 1:
+        end_page = paginator.num_pages + 1
+
+    page_numbers = [n for n in range(start_page, end_page) if n in range(1, paginator.num_pages + 1)]
+
+    page_obj.page_numbers = page_numbers
+    page_obj.show_first = 1 not in page_numbers
+    page_obj.show_last = paginator.num_pages not in page_numbers
+
+    return page_obj
 
 
-def index(request):
-    context = {
+# def list_view(request, objects):
+#     return render(request, 'question-list.html', context={
+#         'title': 'Questions',
+#         'questions': get_page_object(request, objects),
+#     })
+
+
+def index(request: HttpRequest):
+    return render(request, 'question-list.html', context={
         'title': 'Questions',
-        'questions': Question.objects.all(),
-        'top_tags': Tag.objects.top(),
-    }
-    return render(request, os.path.join('index.html'), context)
+        'questions': get_page_object(request, Question.objects.all()),
+    })
 
 
-def ask(request):
-    context = {
+def popular(request: HttpRequest):
+    return render(request, 'question-list.html', context={
+        'title': 'Questions',
+        'questions': get_page_object(request, Question.objects.popular()),
+    })
+
+
+def latest(request: HttpRequest):
+    return render(request, 'question-list.html', context={
+        'title': 'Latest',
+        'questions': get_page_object(request, Question.objects.latest()),
+    })
+
+
+def ask(request: HttpRequest):
+    return render(request, 'ask.html', context={
         'title': 'ask',
-    }
-    return render(request, os.path.join('ask.html'), context)
+    })
 
 
 def question(request, question_id):
-    context = {
+    q = Question.objects.get(id=question_id)
+    return render(request, os.path.join('question.html'), context={
         'title': str(question_id),
-        'question': Question.objects.get(id=question_id),
-    }
-    return render(request, os.path.join('question.html'), context)
+        'question': q,
+        'answers': get_page_object(request, q.answers()),
+    })
 
 
 def tag(request, tag):
-    context = {
+    return render(request, 'tag.html', context={
         'title': tag,
         'tag': Tag.objects.get(pk=tag),
-    }
-    return render(request, os.path.join('tag.html'), context)
+    })
 
 
-def settings(request):
-    context = {
+def settings(request: HttpRequest):
+    return render(request, 'settings.html', context={
         'title': 'settings',
-    }
-    return render(request, os.path.join('settings.html'), context)
+    })
 
 
-def login(request):
-    context = {
+def login(request: HttpRequest):
+    return render(request, 'login.html', context={
         'title': 'login',
-    }
-    return render(request, os.path.join('login.html'), context)
+    })
 
 
-def registration(request):
-    context = {
+def registration(request: HttpRequest):
+    return render(request, 'registration.html', context={
         'title': 'registration',
-    }
-    return render(request, os.path.join('registration.html'), context)
+    })

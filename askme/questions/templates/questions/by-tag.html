@@ -1,0 +1,10 @@
+{% extends 'questions/list.html' %}
+
+
+{% block title %}
+    {{ tag }} — {{ block.super }}
+{% endblock %}
+
+{% block page_title %}
+    <h2>Questions by tag: {% include 'links/tag.htm' with tag=tag %}</h2>
+{% endblock %}

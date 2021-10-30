@@ -3,40 +3,47 @@ from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count, Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
-from . import get_url_func, get_html_link
 from .votes import QuestionVote, AnswerVote
+from ..utils import unique_slug_generator
 
 
 # ======== Tag ========
 
 class TagQuerySet(models.QuerySet):
-    def top(self):
+    def top(self) -> models.QuerySet:
         return self.annotate(count=Count('question')).order_by('-count')[:10]
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=200, blank=True, null=True)
+    slug = models.SlugField(max_length=100, unique=True)
 
     colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark']
-    color = models.IntegerField(choices=[(index, color) for index, color in enumerate(colors)])
+    color_id = models.IntegerField(choices=[(index, color_id) for index, color_id in enumerate(colors)])
 
     objects = TagQuerySet.as_manager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    url = get_url_func('tag')
-
-    def html(self):
-        return f'<a href="{self.url()}"><span class="badge rounded-pill bg-{self.colors[self.color]}">{str(self)}</span></a>'
+    def color(self) -> str:
+        return self.colors[self.color_id]
 
     def questions(self) -> models.QuerySet['Question']:
         return self.question_set.all()
 
     def question_count(self) -> int:
         return self.question_set.count()
+
+
+@receiver(pre_save, sender=Tag)
+def pre_save_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance)
 
 
 # ======== Question ========
@@ -53,7 +60,7 @@ class QuestionQuerySet(models.QuerySet):
     def popular(self) -> models.QuerySet:
         return self.annotate(num_votes=Count('questionvote', filter=Q(questionvote__type=True)) -
                                        Count('questionvote', filter=Q(questionvote__type=False))) \
-                   .order_by('-num_votes')  # TODO: by votes
+            .order_by('-num_votes')
 
 
 class Question(models.Model):
@@ -67,11 +74,8 @@ class Question(models.Model):
 
     objects = QuestionQuerySet.as_manager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
-
-    url = get_url_func('question')
-    html = get_html_link
 
     def answers(self) -> models.QuerySet:
         return Answer.objects.filter(question=self)
@@ -87,7 +91,7 @@ class Question(models.Model):
 # ======== Answer ========
 
 class AnswerQuerySet(models.QuerySet):
-    def from_author(self, author: User):
+    def from_author(self, author: User) -> models.QuerySet:
         return self.filter(author=author)
 
 
@@ -101,9 +105,9 @@ class Answer(models.Model):
 
     objects = AnswerQuerySet.as_manager()
 
-    def is_correct(self):
+    def is_correct(self) -> bool:
         return self.correct
 
-    def votes(self):
+    def votes(self) -> int:
         my_votes = AnswerVote.objects.filter(answer=self)
         return my_votes.filter(type=True).count() - my_votes.filter(type=False).count()

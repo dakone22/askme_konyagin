@@ -1,0 +1,23 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+
+{% block title %}
+    {{ title }} — {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% block page_title %}
+        <h2>{{ title }}</h2>
+    {% endblock %}
+
+    {% if questions %}
+        {% for question in questions %}
+            {% include 'cards/question.htm' with question=question %}
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">It looks like there are no questions!</div>
+    {% endif %}
+
+    {% include 'misc/paginator.htm' with page_obj=page_obj %}
+{% endblock %}

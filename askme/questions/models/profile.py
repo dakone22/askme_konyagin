@@ -5,12 +5,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from . import get_html_link
-
-# User.add_to_class('url', get_url_func('user.current'))
-User.add_to_class('url', lambda _: '')
-User.add_to_class('html', get_html_link)
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -18,7 +12,6 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to=os.path.join('avatar', 'uploads'),
                                default=os.path.join('avatar', 'no-image.jpg'), blank=True, null=True)
     biography = models.TextField(max_length=5000)
-    teasrasdasd = models.TextField(max_length=5000)
 
 
 @receiver(post_save, sender=User)

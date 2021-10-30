@@ -1,94 +1,101 @@
-import os
-
 from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.shortcuts import render
+from django.views.generic import ListView, TemplateView, DetailView
 
 from .models import Question, Tag
 
 
-def get_page_object(request: HttpRequest, objects: list, count_on_list=5, adjacent_pages=2):
-    paginator = Paginator(objects, count_on_list)
-    n = request.GET.get('page')
-    page_obj = paginator.get_page(n)
+class MyListView(ListView):
+    def paginate_queryset(self, queryset, page_size):  # TODO: paginator over bounds
+        # page = self.kwargs.get(self.page_kwarg) or self.request.GET.get(self.page_kwarg) or 1  # type: str
+        #
+        # try:
+        #     self.kwargs[self.page_kwarg] = 1 if int(page) < 1 else 'last'
+        # except ValueError:
+        #     pass
 
-    if int(n) < 1:
-        page_obj.number = 1
-    if page_obj.number > paginator.num_pages:
-        page_obj.number = paginator.num_pages
-
-    start_page = max(page_obj.number - adjacent_pages, 1)
-    if start_page <= 3:
-        start_page = 1
-    end_page = page_obj.number + adjacent_pages + 1
-    if end_page >= paginator.num_pages - 1:
-        end_page = paginator.num_pages + 1
-
-    page_numbers = [n for n in range(start_page, end_page) if n in range(1, paginator.num_pages + 1)]
-
-    page_obj.page_numbers = page_numbers
-    page_obj.show_first = 1 not in page_numbers
-    page_obj.show_last = paginator.num_pages not in page_numbers
-
-    return page_obj
+        return super().paginate_queryset(queryset, page_size)
 
 
-def index(request: HttpRequest):
-    return render(request, 'question-list.html', context={
-        'title': 'Questions',
-        'questions': get_page_object(request, Question.objects.all()),
-    })
+class QuestionsListView(MyListView):
+    template_name = 'questions/list.html'
+    model = Question
+
+    paginate_by = 10
+    context_object_name = "questions"
+
+    title = "Questions"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        return context
 
 
-def popular(request: HttpRequest):
-    return render(request, 'question-list.html', context={
-        'title': 'Questions',
-        'questions': get_page_object(request, Question.objects.popular()),
-    })
+class QuestionsPopularListView(QuestionsListView):
+    title = "Popular"
+
+    def get_queryset(self):
+        return Question.objects.popular()
 
 
-def latest(request: HttpRequest):
-    return render(request, 'question-list.html', context={
-        'title': 'Latest',
-        'questions': get_page_object(request, Question.objects.latest()),
-    })
+class QuestionsLatestListView(QuestionsListView):
+    title = "Latest"
+
+    def get_queryset(self):
+        return Question.objects.latest()
 
 
-def ask(request: HttpRequest):
-    return render(request, 'ask.html', context={
-        'title': 'ask',
-    })
+class QuestionsByTagListView(QuestionsListView):
+    template_name = 'questions/by-tag.html'
+
+    def get_tag(self):
+        return Tag.objects.get(slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['tag'] = self.get_tag()
+        return context
+
+    def get_queryset(self):
+        return self.get_tag().questions()
 
 
-def question(request, question_id):
-    q = Question.objects.get(id=question_id)
-    return render(request, os.path.join('question.html'), context={
-        'title': str(question_id),
-        'question': q,
-        'answers': get_page_object(request, q.answers()),
-    })
+class QuestionDetailView(DetailView):
+    template_name = 'questions/detail.html'
+    model = Question
+    context_object_name = 'question'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        paginator = Paginator(self.object.answers(), 10)
+        page = self.request.GET.get('page', 1)
+        page_obj = paginator.get_page(page)  # TODO: paginator over bounds
+        context['answers'] = page_obj
+        context['is_paginated'] = True
+
+        return context
 
 
-def tag(request, tag):
-    return render(request, 'tag.html', context={
-        'title': tag,
-        'tag': Tag.objects.get(pk=tag),
-    })
+class AskView(TemplateView):  # TODO: FormView
+    template_name = 'questions/ask.html'
 
 
 def settings(request: HttpRequest):
-    return render(request, 'settings.html', context={
+    return render(request, 'user/settings.html', context={
         'title': 'settings',
     })
 
 
 def login(request: HttpRequest):
-    return render(request, 'login.html', context={
+    return render(request, 'user/login.html', context={
         'title': 'login',
     })
 
 
 def registration(request: HttpRequest):
-    return render(request, 'registration.html', context={
+    return render(request, 'user/registration.html', context={
         'title': 'registration',
     })

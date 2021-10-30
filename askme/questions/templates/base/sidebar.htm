@@ -1,24 +1,26 @@
 {% block sidebar %}
-<div class="row">
-    <h2>Popular Tags</h2>
-    <p>
-        {% for tag in top_tags %}
-            {{ tag.html|safe }}
-        {% endfor %}
-    </p>
-</div>
+    <div class="row">
+        <h2>Popular Tags</h2>
+        <p>
+            {% for tag in top_tags %}
+                {% include 'links/tag.htm' with tag=tag %}
+            {% endfor %}
+        </p>
+    </div>
 
-<div class="row">
-    <h2>Best Members</h2>
-    <ol class="list-group list-group-flush">
-        {% for user, c in top_members %}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div class="ms-2 me-auto">
-                    <div class="fw-bold">{{ user.html|safe }}</div>
-                </div>
-                <span class="badge bg-primary rounded-pill">{{ c }}</span>
-            </li>
-        {% endfor %}
-    </ol>
-</div>
+    <div class="row">
+        <h2>Best Members</h2>
+        <ol class="list-group list-group-flush">
+            {% for user, c in top_members %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            {% include 'links/user.htm' with user=user %}
+                        </div>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ c }}</span>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
 {% endblock %}

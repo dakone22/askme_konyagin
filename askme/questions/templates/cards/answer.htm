@@ -1,0 +1,25 @@
+{% load static %}  {# TODO: REMOVE STATIC TAG #}
+
+<div class="card card-body m-4 {% if answer.correct %}border-success{% endif %}">
+    <div class="row">
+        <div class="col-1 d-flex flex-column">
+            <div class="mb-auto"><img src="{% static 'img/logo.svg' %}" alt width="64" class="me-2"></div>
+            <div><input class="form-control {% if answer.correct %}border-success{% endif %}" type="text" value="{{ answer.votes }}"></div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <p>{{ answer.text }}</p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="answerCorrect" {% if answer.correct %}checked{% endif %}>
+                        <label class="form-check-label" for="answerCorrect">
+                            Correct!
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

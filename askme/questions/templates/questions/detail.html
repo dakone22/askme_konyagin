@@ -1,0 +1,30 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}
+    {{ question.title|truncatechars:30 }} — {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% include 'cards/question-detail.htm' with question=question %}
+
+    <hr>
+
+    {% for answer in answers %}
+        {% include 'cards/answer.htm' with answer=answer %}
+    {% endfor %}
+
+    {% include 'misc/paginator.htm' with page_obj=answers %}
+
+    <hr>
+
+    <div class="m-4">
+        <form method="post">
+            <div class="mb-3">
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                          placeholder="Enter your answer here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">Submit</button>
+        </form>
+    </div>
+{% endblock %}

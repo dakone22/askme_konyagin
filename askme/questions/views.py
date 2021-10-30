@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.http import HttpRequest
+from django.http import HttpRequest, Http404
 from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, DetailView
 
@@ -8,14 +8,12 @@ from .models import Question, Tag
 
 class MyListView(ListView):
     def paginate_queryset(self, queryset, page_size):  # TODO: paginator over bounds
-        # page = self.kwargs.get(self.page_kwarg) or self.request.GET.get(self.page_kwarg) or 1  # type: str
-        #
-        # try:
-        #     self.kwargs[self.page_kwarg] = 1 if int(page) < 1 else 'last'
-        # except ValueError:
-        #     pass
-
-        return super().paginate_queryset(queryset, page_size)
+        try:
+            return super().paginate_queryset(queryset, page_size)
+        except Http404:
+            page = self.kwargs.get(self.page_kwarg) or self.request.GET.get(self.page_kwarg) or 1  # type: str
+            self.kwargs[self.page_kwarg] = 1 if int(page) < 1 else 'last'
+            return super().paginate_queryset(queryset, page_size)
 
 
 class QuestionsListView(MyListView):
@@ -71,7 +69,7 @@ class QuestionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         paginator = Paginator(self.object.answers(), 10)
-        page = self.request.GET.get('page', 1)
+        page = max(1, min(int(self.request.GET.get('page', 1)), paginator.num_pages))
         page_obj = paginator.get_page(page)  # TODO: paginator over bounds
         context['answers'] = page_obj
         context['is_paginated'] = True

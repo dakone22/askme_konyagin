@@ -1,11 +1,24 @@
 from os.path import join
 
+from django.core.paginator import Paginator
+from django.http import HttpRequest
 from django.shortcuts import render
+
+
+def paginate(objects_list: list, request: HttpRequest, per_page=10):
+    paginator = Paginator(objects_list, per_page)
+    n = max(1, min(int(request.GET.get('page', 1)), paginator.num_pages))
+    page_obj = paginator.get_page(n)
+
+    return page_obj
 
 
 def index(request):
     context = {
         'title': 'Questions',
+        'questions': paginate([
+            {'title': f'Title{i}', 'text': f'Text{i}'} for i in range(50)
+        ], request),
     }
     return render(request, join('index.html'), context)
 

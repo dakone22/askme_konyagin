@@ -1,3 +1,4 @@
+import logging
 import random
 import string
 import urllib.request
@@ -8,13 +9,29 @@ import markovify
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 from django.db import models
-from django.utils import timezone  # TODO: random datetime
+from django.db.utils import IntegrityError
+from django.utils import timezone
 
 from questions.models import QuestionVote, AnswerVote
 from questions.models import Tag, Question, Answer
 
+# region Logging
+logFormatter = logging.Formatter("%(asctime)s [%(levelname)-8.8s]  %(message)s")
+logger = logging.getLogger(__file__)
+logger.setLevel(logging.INFO)
 
+fileHandler = logging.FileHandler(f"{__file__}_{timezone.now().strftime('%Y-%m-%d_%H-%M-%S')}.log")
+fileHandler.setFormatter(logFormatter)
+logger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+# endregion
+
+# region Decorators
 def benchmark(func):
+    """ Time and memory usage of func """
     def new_func(*args, **kwargs):
         import time
         import cProfile, pstats, io
@@ -36,20 +53,38 @@ def benchmark(func):
         s = io.StringIO()
         sortby = SortKey.CUMULATIVE
         ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print(s.getvalue())
+        ps.logger.info_stats()
+        logger.info(s.getvalue())
 
         top_stats = snapshot.statistics('lineno')
-        print("[ Top 10 ]")
+        logger.info("[ Top 10 ]")
         for stat in top_stats[:10]:
-            print(stat)
+            logger.info(stat)
 
-        print(f'Done in {end_time - start_time:.2f} seconds')
+        logger.info(f'Done in {end_time - start_time:.2f} seconds')
 
         return result
 
     return new_func
 
+
+def retry_on(exception, max_attempts=10):
+    def decorator(func):
+        def new_func(*args, **kwargs):
+            fails_count = 0
+            while fails_count < max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except exception as e:
+                    fails_count += 1
+                    warnings.warn(f"Caught {e} exception. Retrying on {exception} in {fails_count} time(s)...")
+            logger.info(f"Retry on {exception} failed in {max_attempts} times! Exiting program with status code -1...")
+            exit(-1)
+
+        return new_func
+
+    return decorator
+# endregion
 
 class Faker:
     TEXT_DATA_URL = r'https://raw.githubusercontent.com/brunoklein99/deep-learning-notes/master/shakespeare.txt'
@@ -61,12 +96,12 @@ class Faker:
     def __init__(self):
         self.text_model = markovify.Text('\n'.join(self._load_lines(Faker.TEXT_DATA_URL)))
         self.username_list = self._load_lines(Faker.USERNAMES_URL)
-        self.domain_list = ['google.com']  # self._load_lines(Faker.DOMAINS_URL)
+        self.domain_list = self._load_lines(Faker.DOMAINS_URL)
         self.words_list = self._load_lines(Faker.WORDS_URL) + self._load_lines(Faker.LANGUAGES_URL)
 
     @staticmethod
     def _load_lines(url: str, encoding='utf-8') -> list[str]:
-        print(f'Downloading {url}...')
+        logger.info(f'Downloading {url}...')
         file = urllib.request.urlopen(url)
 
         result = []
@@ -74,7 +109,7 @@ class Faker:
             try:
                 decoded_line = line.decode(encoding)
             except UnicodeDecodeError:
-                print(line, repr(line))
+                logger.warning(repr(line))
             else:
                 result.append(decoded_line.strip())
 
@@ -144,15 +179,18 @@ class Filler:
     @staticmethod
     def _fill(model: type[models.Model], count: int, create: callable, after: callable = None):
         cur = model.objects.count()
-        print(f"Filling {model} [{cur}/{count}]...")
+        logger.info(f"Filling {model} [{cur}/{count}]...")
         for i in range(count - cur):
-            obj = create(i)
-            print(f'({i}) New {obj}')
+
+            obj = retry_on(IntegrityError)(create)(i)
+            # obj = create(i)
+
+            logger.info(f'({i}) New {obj}')
             obj.save()
 
             if after is not None:
                 after(obj)
-        print()
+        logger.info()
 
     @staticmethod
     def get_start_date():
@@ -193,7 +231,7 @@ class Filler:
             tag_count = random.randint(1, self.tags_per_question)
             # tags = random.sample(Tag.objects.all(), tag_count)  # TODO: check memory usage !!!
             tags = [random.choice(Tag.objects.all()) for _ in range(tag_count)]
-            print(f"Adding tags: {tags}")
+            logger.info(f"Adding tags: {tags}")
             for tag in tags:
                 q.tags.add(tag)
 
@@ -253,6 +291,7 @@ class Command(BaseCommand):
             action='store_true',
         )
 
+    @retry_on(Exception)
     def handle(self, *args, **options):
         quantities = {
             'users': 10_000,
@@ -272,11 +311,10 @@ class Command(BaseCommand):
             'answer_votes': 200,
         }
 
-        print("Initing faker...")
-        faker = Faker()
+        logger.info(f"Filling DB with: {quantities}")
 
-        print("Filling DB with:")
-        print('\n'.join([f"{key} = {value}" for key, value in quantities.items()]))
+        logger.info("Initing faker...")
+        faker = Faker()
 
         filler = Filler(faker, **quantities)
 

@@ -18,7 +18,7 @@ class TagQuerySet(models.QuerySet):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     description = models.CharField(max_length=200, blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -86,6 +86,9 @@ class Question(models.Model):
     def votes(self) -> int:
         my_votes = QuestionVote.objects.filter(question=self)
         return my_votes.filter(type=True).count() - my_votes.filter(type=False).count()
+
+    def top_tags(self, limit=5) -> models.QuerySet:
+        return self.tags.annotate(count=Count('question')).order_by('-count')[:limit]
 
 
 # ======== Answer ========

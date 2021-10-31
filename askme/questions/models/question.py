@@ -54,7 +54,7 @@ class QuestionQuerySet(models.QuerySet):
 
     def latest(self, from_date: datetime = None) -> models.QuerySet:
         if from_date is None:
-            from_date = datetime.now() - timedelta(hours=1)
+            from_date = datetime.now() - timedelta(days=1)
         return self.filter(date__gte=from_date)
 
     def popular(self) -> models.QuerySet:

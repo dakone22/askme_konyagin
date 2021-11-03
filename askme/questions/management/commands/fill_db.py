@@ -190,7 +190,6 @@ class Filler:
 
             if after is not None:
                 after(obj)
-        logger.info()
 
     @staticmethod
     def get_start_date():
@@ -230,10 +229,13 @@ class Filler:
         def after(q: Question):
             tag_count = random.randint(1, self.tags_per_question)
             # tags = random.sample(Tag.objects.all(), tag_count)  # TODO: check memory usage !!!
-            tags = [random.choice(Tag.objects.all()) for _ in range(tag_count)]
-            logger.info(f"Adding tags: {tags}")
-            for tag in tags:
+            all_tags = Tag.objects.all()
+            #tags = [random.choice(all_tags) for _ in range(tag_count)]
+            #logger.info(f"Adding tags: {tags}")
+            for _ in range(tag_count):
+                tag = random.choice(all_tags)
                 q.tags.add(tag)
+                logger.info(f"Added tag {tag}")
 
         self._fill(
             model=Question,

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,14 +19,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&2y#^77slw3m@5#loaypd6o6+bx08y4v-@8@y8)cxq#p$44!26'  # DEBUG KEY
+if os.environ.get('DEBUG', True):
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = 'django-insecure-&2y#^77slw3m@5#loaypd6o6+bx08y4v-@8@y8)cxq#p$44!26'  # DEBUG KEY
 
-ALLOWED_HOSTS = []
-
+    ALLOWED_HOSTS = []
+else:
+    DEBUG = False
+    SECRET_KEY = os.environ['SECRET_KEY']
+    ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', '*')]
 
 # Application definition
 
@@ -77,12 +82,24 @@ WSGI_APPLICATION = 'askme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if False:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['DB_NAME'],
+            'USER': os.environ['DB_USER'],
+            'PASSWORD': os.environ['DB_PASSWORD'],
+            'HOST': os.environ['DB_HOST'],
+            'PORT': os.environ['DB_PORT'],
+        }
+    }
 
 
 # Password validation

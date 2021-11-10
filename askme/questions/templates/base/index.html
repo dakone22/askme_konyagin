@@ -1,3 +1,5 @@
+{% load bootstrap5 %}
+
 <!DOCTYPE html>
 <html lang="ru">
     <head>
@@ -8,7 +10,8 @@
 
         {% load static %}
 
-        <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+        {% bootstrap_css %}
+
         {% block extra_css %} {% endblock %}
 
         <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}"/>
@@ -16,8 +19,11 @@
     <body>
         {% include 'base/navbar.htm' %}
 
+
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <main>
+                {# Display django.contrib.messages as Bootstrap alerts #}
+                {% bootstrap_messages %}
                 <div class="row g-5">
                     <div class="col-md-9">
                         {% block content %} {% endblock %}
@@ -32,7 +38,7 @@
             {% include 'base/footer.htm' %}
         </div>
 
-        <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+        {% bootstrap_javascript %}
         {% block extra_js %}{% endblock %}
     </body>
 </html>

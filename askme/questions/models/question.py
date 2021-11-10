@@ -12,7 +12,7 @@ from ..utils import unique_slug_generator
 
 # ======== Tag ========
 
-class TagQuerySet(models.QuerySet):
+class TagManager(models.Manager):
     def top(self) -> models.QuerySet:
         return self.annotate(count=Count('question')).order_by('-count')[:10]
 
@@ -25,7 +25,7 @@ class Tag(models.Model):
     colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark']
     color_id = models.IntegerField(choices=[(index, color_id) for index, color_id in enumerate(colors)])
 
-    objects = TagQuerySet.as_manager()
+    objects = TagManager()
 
     def __str__(self) -> str:
         return self.name
@@ -48,7 +48,7 @@ def pre_save_receiver(sender, instance, *args, **kwargs):
 
 # ======== Question ========
 
-class QuestionQuerySet(models.QuerySet):
+class QuestionManager(models.Manager):
     def from_author(self, author: User) -> models.QuerySet:
         return self.filter(author=author)
 
@@ -66,13 +66,13 @@ class QuestionQuerySet(models.QuerySet):
 class Question(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
-    date = models.DateTimeField(verbose_name='Creation date')
+    date = models.DateTimeField(verbose_name='Creation date', auto_now_add=True)
     title = models.CharField(max_length=100)
     text = models.TextField(max_length=5000)
 
     tags = models.ManyToManyField(to=Tag)
 
-    objects = QuestionQuerySet.as_manager()
+    objects = QuestionManager()
 
     def __str__(self) -> str:
         return self.title
@@ -93,7 +93,7 @@ class Question(models.Model):
 
 # ======== Answer ========
 
-class AnswerQuerySet(models.QuerySet):
+class AnswerManager(models.Manager):
     def from_author(self, author: User) -> models.QuerySet:
         return self.filter(author=author)
 
@@ -106,7 +106,7 @@ class Answer(models.Model):
     text = models.TextField(max_length=1000)
     correct = models.BooleanField(verbose_name="Is Correct", default=False)
 
-    objects = AnswerQuerySet.as_manager()
+    objects = AnswerManager()
 
     def is_correct(self) -> bool:
         return self.correct

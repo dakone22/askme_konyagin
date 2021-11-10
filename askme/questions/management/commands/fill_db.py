@@ -27,11 +27,14 @@ logger.addHandler(fileHandler)
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
+
+
 # endregion
 
 # region Decorators
 def benchmark(func):
     """ Time and memory usage of func """
+
     def new_func(*args, **kwargs):
         import time
         import cProfile, pstats, io
@@ -84,6 +87,8 @@ def retry_on(exception, max_attempts=10):
         return new_func
 
     return decorator
+
+
 # endregion
 
 class Faker:
@@ -179,17 +184,33 @@ class Filler:
     @staticmethod
     def _fill(model: type[models.Model], count: int, create: callable, after: callable = None):
         cur = model.objects.count()
+
+        obj_buffer = []
+        save_every = max(1, int(count ** .5))
+
+        def save(buffer: list[model]):
+            logger.info(f'Saving buffered {len(buffer)} objects...')
+            model.objects.bulk_create(buffer)
+            if after is not None:
+                after(buffer)
+            buffer.clear()
+
         logger.info(f"Filling {model} [{cur}/{count}]...")
         for i in range(count - cur):
 
             obj = retry_on(IntegrityError)(create)(i)
             # obj = create(i)
 
-            logger.info(f'({i}) New {obj}')
-            obj.save()
+            # logger.info(f'({i}) New {obj}')
+            obj_buffer.append(obj)
 
-            if after is not None:
-                after(obj)
+            if len(obj_buffer) >= save_every:
+                save(obj_buffer)
+
+        if len(obj_buffer) > 0:
+            save(obj_buffer)
+
+        assert len(obj_buffer) == 0
 
     @staticmethod
     def get_start_date():
@@ -199,7 +220,7 @@ class Filler:
     def start_date(self):
         return self.get_start_date()
 
-    @benchmark
+    # @benchmark
     def fill(self):
         self.fill_users()
         self.fill_tags()
@@ -222,26 +243,41 @@ class Filler:
         self._fill(
             model=Tag,
             count=self.tags,
-            create=lambda i: Tag.objects.create(name=self.faker.tag(), color_id=random.randint(0, 5))
+            create=lambda i: Tag(name=self.faker.tag(), color_id=random.randint(0, 5))
         )
 
     def fill_questions(self):
-        def after(q: Question):
-            tag_count = random.randint(1, self.tags_per_question)
-            # tags = random.sample(Tag.objects.all(), tag_count)  # TODO: check memory usage !!!
-            all_tags = Tag.objects.all()
-            #tags = [random.choice(all_tags) for _ in range(tag_count)]
-            #logger.info(f"Adding tags: {tags}")
-            for _ in range(tag_count):
-                tag = random.choice(all_tags)
-                q.tags.add(tag)
-                logger.info(f"Added tag {tag}")
+        def after(questions: list[Question]):
+            tag_ids = list(Tag.objects.values_list('id', flat=True))
 
+            # tags = random.sample(Tag.objects.all(), tag_count)  # TODO: check memory usage !!!
+            # all_tags = Tag.objects.all()
+            # tags = [random.choice(all_tags) for _ in range(tag_count)]
+            # logger.info(f"Adding tags: {tags}")
+
+            through_objs = []
+            for q in questions:
+                random.shuffle(tag_ids)
+                tag_count = random.randint(1, self.tags_per_question)
+                tags = tag_ids[:tag_count]
+                # logger.info(f'For {q} new {tags}')
+                for tag_id in tags:
+                    through = Question.tags.through(
+                        question_id=q.id,
+                        tag_id=tag_id,
+                    )
+                    through_objs.append(through)
+            del tag_ids
+            logger.info(f'Generating through {len(through_objs)} objects.. ')
+            Question.tags.through.objects.bulk_create(through_objs)
+            del through_objs
+
+        user_ids = list(User.objects.values_list('id', flat=True))  # TODO: check memory usage
         self._fill(
             model=Question,
             count=self.questions,
-            create=lambda i: Question.objects.create(
-                author=random.choice(User.objects.all()),  # TODO: check memory usage
+            create=lambda i: Question(
+                author_id=random.choice(user_ids),
                 date=self.faker.datetime(self.start_date),
                 title=self.faker.title(),
                 text=self.faker.text(),
@@ -250,34 +286,41 @@ class Filler:
         )
 
     def fill_answers(self):
+        user_ids = list(User.objects.values_list('id', flat=True))  # TODO: check memory usage
+        question_ids = list(Question.objects.values_list('id', flat=True))  # TODO: check memory usage
+
         self._fill(
             model=Answer,
             count=self.answers,
-            create=lambda i: Answer.objects.create(
-                author=random.choice(User.objects.all()),  # TODO: check memory usage
-                question=random.choice(Question.objects.all()),  # TODO: check memory usage
+            create=lambda i: Answer(
+                author_id=random.choice(user_ids),
+                question_id=random.choice(question_ids),
                 date=self.faker.datetime(self.start_date),
                 text=self.faker.text(),
             )
         )
 
     def fill_votes(self):
+        user_ids = list(User.objects.values_list('id', flat=True))  # TODO: check memory usage
+        question_ids = list(Question.objects.values_list('id', flat=True))  # TODO: check memory usage
+
         self._fill(
             model=QuestionVote,
             count=self.question_votes,
-            create=lambda i: QuestionVote.objects.create(
-                user=random.choice(User.objects.all()),  # TODO: check memory usage
-                question=random.choice(Question.objects.all()),  # TODO: check memory usage
+            create=lambda i: QuestionVote(
+                user_id=random.choice(user_ids),
+                question_id=random.choice(question_ids),
                 type=random.randint(0, 100) > 10,
             )
         )
 
+        answer_ids = list(Answer.objects.values_list('id', flat=True))  # TODO: check memory usage
         self._fill(
             model=AnswerVote,
             count=self.answer_votes,
-            create=lambda i: AnswerVote.objects.create(
-                user=random.choice(User.objects.all()),  # TODO: check memory usage
-                answer=random.choice(Answer.objects.all()),  # TODO: check memory usage
+            create=lambda i: AnswerVote(
+                user_id=random.choice(user_ids),
+                answer_id=random.choice(answer_ids),
                 type=random.randint(0, 100) > 20,
             )
         )

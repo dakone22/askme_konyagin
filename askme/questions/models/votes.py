@@ -7,7 +7,7 @@ vote_type = (
 )
 
 
-class QuestionVoteQuerySet(models.QuerySet):
+class QuestionVoteManager(models.Manager):
     def from_question(self, question):
         return self.filter(question=question)
 
@@ -17,10 +17,10 @@ class QuestionVote(models.Model):
     question = models.ForeignKey(to='questions.Question', on_delete=models.CASCADE)
     type = models.BooleanField(choices=vote_type)
 
-    objects = QuestionVoteQuerySet.as_manager()
+    objects = QuestionVoteManager()
 
 
-class AnswerVoteQuerySet(models.QuerySet):
+class AnswerVoteManager(models.Manager):
     def from_question(self, answer):
         return self.filter(answer=answer)
 
@@ -30,4 +30,4 @@ class AnswerVote(models.Model):
     answer = models.ForeignKey(to='questions.Answer', on_delete=models.CASCADE)
     type = models.BooleanField(choices=vote_type)
 
-    objects = AnswerVoteQuerySet.as_manager()
+    objects = AnswerVoteManager()

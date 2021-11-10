@@ -1,40 +1,47 @@
 {% extends 'base/index.html' %}
 {% load static %}
+{% load bootstrap5 %}
 
 {% block content %}
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-    </symbol>
-</svg>
+    {% if next %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {% if user.is_authenticated %}
+                Your account doesn't have access to this page. To proceed, please login with an account that has access.
+            {% else %}
+                Please login to see this page.
+            {% endif %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
 
-<h2>Log In</h2>
+    <h2>Log In</h2>
 
-<div class="d-flex align-items-center alert alert-danger alert-dismissible fade show" role="alert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
-        <use xlink:href="#exclamation-triangle-fill"/>
-    </svg>
-    <div>
-        <strong>Error!</strong><br>
-        Sorry, wrong login or password!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="m-4">
+        <form action="{% url 'user:login' %}" method="POST">
+            {% csrf_token %}
+
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary w-100 btn-block">Войти</button>
+                <a class="btn btn-outline-primary text-center w-100 btn-block" href="{% url 'user:password_reset' %}"
+                   role="button">Забыли пароль?</a>
+                <input type="hidden" name="next" value="{{ next }}"/>
+            {% endbuttons %}
+        </form>
+
+        {#    <form method="post">#}
+        {#        <div class="mb-3">#}
+        {#            <label for="authLogin" class="form-label">Login</label>#}
+        {#            <input type="text" class="form-control" id="authLogin" placeholder="Login">#}
+        {#        </div>#}
+        {#        <div class="mb-3">#}
+        {#            <label for="authPassword" class="form-label">Password</label>#}
+        {#            <input type="password" class="form-control" id="authPassword" placeholder="Password">#}
+        {#        </div>#}
+        {#        <button type="submit" class="btn btn-primary">Log in!</button>#}
+        {#        <a href="#">#}
+        {#            <button class="btn btn-outline-primary">Sign up</button>#}
+        {#        </a>#}
+        {#    </form>#}
     </div>
-</div>
-
-<div class="m-4">
-    <form method="post">
-        <div class="mb-3">
-            <label for="authLogin" class="form-label">Login</label>
-            <input type="text" class="form-control" id="authLogin" placeholder="Login">
-        </div>
-        <div class="mb-3">
-            <label for="authPassword" class="form-label">Password</label>
-            <input type="password" class="form-control" id="authPassword" placeholder="Password">
-        </div>
-        <button type="submit" class="btn btn-primary">Log in!</button>
-        <a href="#">
-            <button class="btn btn-outline-primary">Sign up</button>
-        </a>
-    </form>
-</div>
 {% endblock %}

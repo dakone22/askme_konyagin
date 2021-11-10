@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('', include('questions.urls')),
     path('admin/', admin.site.urls),
+    path('tags_input/', include('tags_input.urls', namespace='tags_input')),
 ]
